@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#080d19">
+  <title>Login · Black Fire Store</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    const firebaseConfig = {
+      apiKey: "AIzaSyAE3LEjwh3ZJGwzvpyjKiIfcXBUasYfFec",
+      authDomain: "teligram-welcome-bot.firebaseapp.com",
+      databaseURL: "https://teligram-welcome-bot-default-rtdb.firebaseio.com",
+      projectId: "teligram-welcome-bot",
+      storageBucket: "teligram-welcome-bot.firebasestorage.app",
+      messagingSenderId: "728176803041",
+      appId: "1:728176803041:web:53a9cdb701b58a6c248ba0"
+    };
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+    window.firebaseDB = database;
+    window.firebaseRef = ref;
+    window.firebaseGet = get;
+    window.firebaseChild = child;
+    window.dispatchEvent(new Event('firebaseReady'));
+  </script>
+  <style>
+    :root{color-scheme:dark;--bg:#080d19;--panel:rgba(15,23,42,.82);--line:rgba(148,163,184,.18);--muted:#94a3b8;--text:#edf4ff;--cyan:#67e8f9;--violet:#a78bfa;--red:#fda4af}
+    *{box-sizing:border-box}html{min-height:100%;font-family:Inter,system-ui,sans-serif}body{margin:0;min-height:100vh;display:grid;place-items:center;overflow-x:hidden;background:radial-gradient(ellipse at 12% 10%,rgba(8,145,178,.17),transparent 36%),radial-gradient(ellipse at 90% 85%,rgba(124,58,237,.19),transparent 38%),linear-gradient(135deg,#060912,#0c1424 55%,#090c18);color:var(--text);padding:24px;position:relative}
+    body:before,body:after{content:"";position:fixed;pointer-events:none;width:320px;height:320px;border:1px solid rgba(103,232,249,.1);border-radius:50%;animation:orbit 22s linear infinite;z-index:0}body:before{top:-170px;left:-120px;box-shadow:0 0 0 34px rgba(103,232,249,.025),0 0 0 68px rgba(103,232,249,.018)}body:after{bottom:-220px;right:-100px;animation-direction:reverse;border-color:rgba(167,139,250,.12)}
+    @keyframes orbit{to{transform:rotate(360deg)}}@keyframes rise{from{opacity:0;transform:translateY(18px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}@keyframes spin{to{transform:rotate(360deg)}}@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+    .shell{width:min(100%,440px);position:relative;z-index:1;animation:rise .55s cubic-bezier(.2,.8,.2,1) both}.brand-row{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:22px}.brand-mark{width:48px;height:48px;display:grid;place-items:center;border-radius:15px;background:linear-gradient(135deg,rgba(103,232,249,.18),rgba(167,139,250,.2));border:1px solid rgba(103,232,249,.3);box-shadow:0 0 35px rgba(34,211,238,.1);font-size:24px}.brand-title{font-size:17px;font-weight:800;letter-spacing:.4px}.brand-caption{font-size:11px;color:var(--muted);margin-top:4px;letter-spacing:1.7px;text-transform:uppercase}
+    .card{padding:clamp(25px,6vw,38px);border:1px solid var(--line);border-radius:25px;background:linear-gradient(155deg,rgba(18,28,48,.92),rgba(8,13,25,.94));box-shadow:0 28px 90px rgba(0,0,0,.42),inset 0 1px rgba(255,255,255,.035);backdrop-filter:blur(22px)}.eyebrow{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(103,232,249,.18);border-radius:999px;padding:7px 11px;color:#a5f3fc;background:rgba(8,145,178,.08);font-size:10px;letter-spacing:1.2px;font-weight:800;text-transform:uppercase}.dot{width:6px;height:6px;border-radius:50%;background:#34d399;box-shadow:0 0 12px #34d399}.heading{font-size:29px;letter-spacing:-1px;line-height:1.15;margin:18px 0 9px;font-weight:800}.heading span{background:linear-gradient(90deg,#f8fafc,var(--cyan),#c4b5fd);background-clip:text;-webkit-background-clip:text;color:transparent}.subheading{font-size:13px;line-height:1.7;color:var(--muted);margin:0 0 28px}
+    .field{margin:0 0 19px}.field label{display:flex;align-items:center;justify-content:space-between;font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:9px}.field input{width:100%;height:50px;border-radius:12px;border:1px solid rgba(148,163,184,.2);background:rgba(3,8,20,.55);color:#f8fafc;padding:0 14px;font:inherit;font-size:13px;outline:none;transition:border-color .2s,box-shadow .2s,background .2s}.field input::placeholder{color:#64748b}.field input:focus{border-color:rgba(103,232,249,.65);background:rgba(5,14,29,.9);box-shadow:0 0 0 4px rgba(34,211,238,.09)}.password-wrap{position:relative}.password-wrap input{padding-right:76px}.show-pass{position:absolute;right:8px;top:8px;height:34px;padding:0 9px;border:0;border-radius:8px;color:#a5f3fc;background:rgba(8,145,178,.12);font-size:11px;font-weight:700;cursor:pointer}.show-pass:hover{background:rgba(8,145,178,.22)}
+    .submit{width:100%;height:51px;margin-top:5px;border:1px solid rgba(103,232,249,.35);border-radius:12px;display:flex;align-items:center;justify-content:center;gap:10px;color:#04131c;background:linear-gradient(100deg,#67e8f9,#a5b4fc 70%,#c4b5fd);font:inherit;font-size:13px;font-weight:800;cursor:pointer;box-shadow:0 10px 30px rgba(34,211,238,.13);transition:transform .18s,filter .18s,box-shadow .18s}.submit:hover{transform:translateY(-1px);filter:brightness(1.05);box-shadow:0 13px 35px rgba(34,211,238,.2)}.submit:active{transform:translateY(1px)}.submit:disabled{opacity:.7;cursor:wait;transform:none}.spinner{display:none;width:17px;height:17px;border:2px solid rgba(4,19,28,.25);border-top-color:#04131c;border-radius:50%;animation:spin .7s linear infinite}.submit.loading .spinner{display:block}.submit.loading .btn-label{display:none}
+    .message{display:none;margin-top:15px;border-radius:11px;padding:12px 13px;font-size:12px;line-height:1.55}.message.error{display:block;color:#fecdd3;background:rgba(159,18,57,.13);border:1px solid rgba(251,113,133,.25);animation:shake .3s ease}.message.info{display:block;color:#bae6fd;background:rgba(3,105,161,.12);border:1px solid rgba(56,189,248,.2)}.footer{display:flex;align-items:center;justify-content:center;gap:7px;margin-top:20px;font-size:10px;color:#64748b}.footer svg{opacity:.8}.bottom-note{text-align:center;color:#64748b;font-size:10px;margin-top:18px;line-height:1.7}.security-note{display:flex;align-items:flex-start;gap:9px;margin-top:22px;padding-top:17px;border-top:1px solid rgba(148,163,184,.12);font-size:10px;color:#7c8ba3;line-height:1.6}.security-note b{color:#a5b4fc;font-weight:700}
+    @media(max-width:480px){body{padding:17px}.card{border-radius:21px}.heading{font-size:26px}.brand-row{margin-bottom:17px}}@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition:none!important}}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <div class="brand-row"><div class="brand-mark" aria-hidden="true">🔥</div><div><div class="brand-title">BLACK FIRE STORE</div><div class="brand-caption">Control center</div></div></div>
+    <section class="card" aria-labelledby="loginTitle">
+      <div class="eyebrow"><span class="dot"></span> Secure access</div>
+      <h1 class="heading" id="loginTitle">Welcome <span>back.</span></h1>
+      <p class="subheading">Sign in with your assigned username and password. Your role opens the correct dashboard automatically.</p>
+      <form id="loginForm" novalidate>
+        <div class="field"><label for="username">Username</label><input id="username" name="username" type="text" placeholder="Enter your admin username" autocomplete="username" maxlength="80" required></div>
+        <div class="field"><label for="password">Password <span style="color:#64748b;font-weight:500">Required</span></label><div class="password-wrap"><input id="password" name="password" type="password" placeholder="Enter your password" autocomplete="current-password" required><button class="show-pass" id="togglePassword" type="button" aria-label="Show password">Show</button></div></div>
+        <button type="submit" class="submit" id="loginBtn"><span class="btn-label">Sign in to dashboard <span aria-hidden="true">→</span></span><span class="spinner" aria-hidden="true"></span></button>
+        <div id="errorMsg" class="message" role="alert" aria-live="polite"></div>
+      </form>
+      <div class="security-note"><span aria-hidden="true">🛡️</span><div><b>Admin area</b><br>Only sign in on your trusted device. Never share your password or bot/API credentials.</div></div>
+    </section>
+    <div class="footer"><span>●</span> Black Fire Store <span>·</span> Admin Panel</div>
+    <div class="bottom-note">Protected dashboard · Payment checks require a running bot and valid Razorpay API credentials.</div>
+  </main>
+  <script>
+    // Seller sessions require Flask. VS Code Live Server (port 3000) cannot process /api routes.
+    if ((location.hostname === '127.0.0.1' || location.hostname === 'localhost') && location.port === '3000') {
+      location.replace('http://' + location.hostname + ':5000/login.html');
+    }
+    if (localStorage.getItem('ffglory_user')) window.location.replace('index.html');
+    
+    const form=document.getElementById('loginForm');
+    const usernameInput=document.getElementById('username');
+    const passwordInput=document.getElementById('password');
+    const errorMsg=document.getElementById('errorMsg');
+    const loginBtn=document.getElementById('loginBtn');
+    let firebaseReady=!!window.firebaseDB;
+    
+    window.addEventListener('firebaseReady',()=>{firebaseReady=!!window.firebaseDB;});
+    
+    document.getElementById('togglePassword').addEventListener('click',()=>{
+      const show=passwordInput.type==='password';passwordInput.type=show?'text':'password';
+      document.getElementById('togglePassword').textContent=show?'Hide':'Show';
+      document.getElementById('togglePassword').setAttribute('aria-label',show?'Hide password':'Show password');
+    });
+    
+    function setError(message,kind='error'){errorMsg.textContent=message;errorMsg.className='message '+kind;}
+    function setLoading(loading){loginBtn.disabled=loading;loginBtn.classList.toggle('loading',loading);loginBtn.setAttribute('aria-busy',String(loading));}
+    
+    form.addEventListener('submit',async event=>{
+      event.preventDefault();errorMsg.className='message';
+      const username=usernameInput.value.trim();const password=passwordInput.value;
+      
+      if(!username||!password){setError('Username aur password dono fill karein.');return;}
+      if(/[.#$\[\]\/]/.test(username)){setError('Username mein . # $ [ ] ya / allowed nahi hai.');return;}
+      
+      setLoading(true);
+      
+      try{
+        // Clear any previous seller session before resolving this login's role.
+        try { await fetch('/api/dc/seller/logout',{method:'POST',credentials:'same-origin'}); } catch(e) {}
+        
+        // 1. Try Seller Login (Flask Backend)
+        try {
+          const sr=await fetch('/api/dc/seller/login',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({username,password})});
+          const sd=await sr.json().catch(()=>({}));
+          if(sr.ok && sd.ok){ 
+            window.location.replace('/selladmin.html'); 
+            return; 
+          }
+        } catch(e) { /* continue to the main-admin login check */ }
+        
+        // 2. Try Main Admin Login (Firebase)
+        for(let i=0;i<30&&!window.firebaseDB;i++)await new Promise(resolve=>setTimeout(resolve,100));
+        if(!window.firebaseDB||!window.firebaseRef||!window.firebaseGet||!window.firebaseChild)throw new Error('Firebase connect nahi hua. Internet check karke dobara try karein.');
+        
+        const root=window.firebaseRef(window.firebaseDB);
+        const snapshot=await window.firebaseGet(window.firebaseChild(root,'web_users/'+username));
+        
+        if(!snapshot.exists()||!snapshot.val()||snapshot.val().password!==password){
+          setError('Username ya password galat hai.');return;
+        }
+        
+        localStorage.setItem('ffglory_user',username);
+        window.location.replace('index.html');
+        
+      }catch(error){
+        console.error('Login failed:',error);
+        setError(error.message||'Login nahi ho paya. Firebase aur internet check karein.');
+      }finally{
+        setLoading(false);
+      }
+    });
+  </script>
+</body>
+</html>

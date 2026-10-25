@@ -1,0 +1,1102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Seller Admin · Black Fire Store</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    /* ============ PREMIUM CSS ============ */
+    :root {
+      --bg: #070910;
+      --panel: rgba(16, 20, 34, 0.82);
+      --panel-solid: #101422;
+      --line: rgba(148, 163, 184, 0.16);
+      --muted: #929bb0;
+      --text: #eef2ff;
+      --gold: #f7b955;
+      --gold2: #ff8a3d;
+      --cyan: #62e6ff;
+      --violet: #9b8cff;
+      --green: #34d399;
+      --red: #fb7185;
+      --radius: 20px;
+      --ease: cubic-bezier(.22, 1, .36, 1);
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+    
+    body {
+      background:
+        radial-gradient(ellipse at 12% 0%, rgba(113, 76, 255, .13), transparent 34%),
+        radial-gradient(ellipse at 92% 12%, rgba(247, 185, 85, .09), transparent 28%),
+        linear-gradient(135deg, #070910 0%, #0b1020 52%, #090b13 100%);
+      color: var(--text);
+      letter-spacing: .01em;
+      min-height: 100vh;
+      display: flex;
+    }
+
+    body:before {
+      content: ""; position: fixed; inset: 0; pointer-events: none; z-index: -1; opacity: .16;
+      background-image: radial-gradient(rgba(255, 255, 255, .2) .6px, transparent .6px);
+      background-size: 22px 22px; mask-image: linear-gradient(to bottom, black, transparent 85%);
+    }
+
+    ::selection { background: rgba(247, 185, 85, .3); color: #fff; }
+    ::-webkit-scrollbar { width: 7px; height: 7px; }
+    ::-webkit-scrollbar-track { background: #090d18; }
+    ::-webkit-scrollbar-thumb { background: linear-gradient(#6d5dfc, #f7b955); border-radius: 99px; }
+
+    /* Sidebar */
+    .sidebar {
+      width: 278px; flex-shrink: 0; padding: 25px 17px 18px;
+      background: rgba(8, 11, 20, .88); backdrop-filter: blur(24px) saturate(150%);
+      border-right: 1px solid var(--line); box-shadow: 14px 0 45px rgba(0, 0, 0, .22);
+      display: flex; flex-direction: column; transition: transform .3s var(--ease); z-index: 100;
+    }
+    
+    .sidebar.open { transform: translateX(0); }
+    .sidebar.hidden { transform: translateX(-100%); position: absolute; height: 100vh; }
+
+    .logo {
+      min-height: 58px; padding: 0 10px 21px; margin-bottom: 18px;
+      font-size: 20px; letter-spacing: .2px; gap: 12px; display: flex; align-items: center;
+      background: linear-gradient(100deg, #fff 8%, #f7c46b 53%, #a99cff 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .logo:before {
+      content: "BF"; display: grid; place-items: center; flex-shrink: 0; width: 42px; height: 42px;
+      border-radius: 14px; color: #10111a; font-size: 14px; font-weight: 900; letter-spacing: -1px;
+      background: linear-gradient(140deg, #ffe6a5, #f7a844 55%, #ff784d);
+      -webkit-text-fill-color: #10111a; box-shadow: 0 5px 24px rgba(247, 169, 68, .25);
+    }
+
+    .nav-links { display: flex; flex-direction: column; gap: 5px; list-style: none; }
+    .nav-links li {
+      position: relative; padding: 12px 13px; margin: 0; border: 1px solid transparent; border-left: 1px solid transparent;
+      border-radius: 12px; color: #a3acc0; font-size: 13px; font-weight: 600; letter-spacing: .01em; cursor: pointer;
+      transition: background .25s var(--ease), transform .25s var(--ease), border-color .25s, color .25s;
+    }
+
+    .nav-links li a { display: flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; }
+    .nav-links li:hover { background: rgba(255, 255, 255, .055); color: #fff; transform: translateX(3px); border-color: rgba(255, 255, 255, .06); }
+    .nav-links li.active {
+      color: #ffe0a1; background: linear-gradient(100deg, rgba(247, 185, 85, .15), rgba(247, 185, 85, .035));
+      border: 1px solid rgba(247, 185, 85, .19); box-shadow: inset 3px 0 0 var(--gold), 0 7px 20px rgba(0, 0, 0, .12);
+    }
+    
+    .nav-links li.active a { color: inherit; }
+
+    .side-bottom { margin-top: auto; border-top: 1px solid var(--line); padding-top: 15px; }
+    .user-info { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .avatar { width: 38px; height: 38px; border-radius: 12px; background: linear-gradient(135deg, var(--gold), var(--gold2)); display: grid; place-items: center; color: #17120a; font-weight: 900; font-size: 16px; }
+    .user-info b { display: block; font-size: 13px; color: #fff; }
+    .user-info small { display: block; font-size: 11px; color: var(--muted); }
+
+    /* Main Content */
+    .main-wrapper { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+    
+    .topbar {
+      height: 72px; display: flex; align-items: center; justify-content: space-between;
+      padding: 0 30px; border-bottom: 1px solid var(--line);
+      background: rgba(8, 11, 20, .7); backdrop-filter: blur(16px); position: sticky; top: 0; z-index: 50;
+    }
+
+    .hamburger { display: none; font-size: 24px; background: none; border: none; color: var(--text); cursor: pointer; }
+    
+    .topbar-left { display: flex; align-items: center; gap: 15px; }
+    .topbar-left h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.5px; }
+    .topbar-left h1 span { color: var(--gold); }
+
+    .status-badge {
+      font-size: 11px; font-weight: 700; padding: 6px 12px; border-radius: 20px;
+      background: rgba(52, 211, 153, .1); color: var(--green); border: 1px solid rgba(52, 211, 153, .2);
+      display: flex; align-items: center; gap: 6px;
+    }
+    .status-badge:before { content: ""; width: 6px; height: 6px; background: var(--green); border-radius: 50%; box-shadow: 0 0 8px var(--green); }
+
+    .content { padding: 30px; max-width: 1300px; margin: 0 auto; width: 100%; display: none; }
+    .content.active { display: block; animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Cards */
+    .card {
+      background: linear-gradient(145deg, rgba(19, 24, 40, .94), rgba(12, 16, 28, .92));
+      border: 1px solid rgba(148, 163, 184, .15); border-radius: 20px;
+      box-shadow: 0 16px 45px rgba(0, 0, 0, .19), inset 0 1px rgba(255, 255, 255, .025);
+      padding: 24px; margin-bottom: 22px; position: relative; overflow: hidden;
+    }
+    
+    .card::before {
+      content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+      background: linear-gradient(90deg, var(--gold), var(--gold2), var(--violet)); opacity: .85;
+    }
+
+    .card h2 { font-size: 18px; font-weight: 700; margin-bottom: 6px; color: #fff; }
+    .card p.subtitle { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+
+    /* Stats Grid */
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-bottom: 22px; }
+    
+    .stat-card {
+      background: rgba(16, 20, 34, .6); border: 1px solid var(--line); border-radius: 16px;
+      padding: 20px; display: flex; flex-direction: column; gap: 10px; position: relative; overflow: hidden;
+    }
+
+    .stat-card:after {
+      content: ""; position: absolute; width: 100px; height: 100px; right: -30px; bottom: -40px;
+      border-radius: 50%; background: rgba(247, 185, 85, .05);
+    }
+    
+    .stat-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; display: flex; justify-content: space-between; }
+    .stat-value { font-size: 32px; font-weight: 800; color: #fff; letter-spacing: -1px; }
+    .stat-sub { font-size: 11px; color: #6b7280; }
+
+    /* Forms */
+    .form-group { margin-bottom: 18px; }
+    .form-group label { display: block; font-size: 12px; color: #aab4c9; font-weight: 600; margin-bottom: 8px; }
+    
+    .form-control {
+      width: 100%; padding: 14px 15px; border-radius: 12px; border: 1px solid rgba(148, 163, 184, .2);
+      background: rgba(5, 9, 18, .72); color: #f5f7ff; box-shadow: inset 0 1px 4px rgba(0, 0, 0, .14);
+      font-size: 14px; outline: none; transition: all 0.2s;
+    }
+
+    .form-control:focus { border-color: rgba(247, 185, 85, .72); box-shadow: 0 0 0 4px rgba(247, 185, 85, .09); background: #0c1120; }
+    
+    .btn {
+      padding: 12px 20px; border-radius: 12px; font-weight: 700; font-size: 14px; cursor: pointer;
+      border: none; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    }
+
+    .btn-primary { background: linear-gradient(115deg, #f5bd62, #f28b43); color: #1a1420; box-shadow: 0 7px 22px rgba(242, 139, 67, .16); }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(242, 139, 67, .27); }
+    
+    .btn-danger { background: linear-gradient(115deg, #fb7185, #dc354d); color: #fff; box-shadow: 0 7px 20px rgba(220, 53, 77, .12); }
+    .btn-danger:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(220, 53, 77, .27); }
+    
+    .btn-secondary { background: rgba(148, 163, 184, 0.1); color: #e2e8f0; border: 1px solid rgba(148, 163, 184, 0.2); }
+    .btn-secondary:hover { background: rgba(148, 163, 184, 0.2); }
+    
+    .btn-success { background: linear-gradient(115deg, #34d399, #0d9b79); color: #041b17; box-shadow: 0 7px 22px rgba(16, 185, 129, .14); }
+    .btn-success:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(16, 185, 129, .23); }
+
+    /* Tables */
+    .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; }
+    table { width: 100%; border-collapse: collapse; min-width: 700px; }
+    th { background: #151b2c; color: #9ea9bf; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; font-weight: 700; padding: 15px; text-align: left; border-bottom: 1px solid rgba(148, 163, 184, .16); }
+    td { padding: 15px; border-bottom: 1px solid rgba(148, 163, 184, .09); font-size: 13px; color: #d1d5db; }
+    tbody tr:hover { background: rgba(247, 185, 85, .045); }
+    
+    .badge { padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 700; }
+    .badge.active { background: rgba(52, 211, 153, 0.15); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.3); }
+    .badge.inactive { background: rgba(251, 113, 133, 0.15); color: #fb7185; border: 1px solid rgba(251, 113, 133, 0.3); }
+
+    /* Product List */
+    .product-list { display: grid; gap: 12px; }
+    .product-item {
+      background: rgba(16, 20, 34, .6); border: 1px solid var(--line); border-radius: 14px;
+      padding: 18px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;
+    }
+    .product-item h3 { font-size: 16px; color: #fff; margin-bottom: 5px; }
+    .product-item p { font-size: 13px; color: var(--muted); margin-bottom: 3px; }
+    .product-item a { color: var(--cyan); text-decoration: none; }
+    .product-item a:hover { text-decoration: underline; }
+
+    /* Alerts (Toast) */
+    .toast {
+      position: fixed; bottom: 20px; right: 20px; z-index: 1000;
+      background: #111827; color: #fff; padding: 15px 20px; border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: flex; align-items: center; gap: 10px;
+      font-size: 14px; font-weight: 600; border: 1px solid var(--line);
+      transform: translateY(100px); opacity: 0; transition: all 0.3s ease;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.success { border-color: rgba(52, 211, 153, 0.3); background: rgba(6, 78, 59, 0.9); color: #34d399; }
+    .toast.error { border-color: rgba(251, 113, 133, 0.3); background: rgba(127, 29, 29, 0.9); color: #fb7185; }
+
+    /* Duration Options Box */
+    .duration-item {
+      display: grid; grid-template-columns: minmax(120px, 1fr) 110px 130px auto; gap: 10px;
+      align-items: center; background: #111827; border: 1px solid #263244;
+      border-radius: 12px; padding: 12px; margin-bottom: 10px;
+    }
+    .duration-item .label { font-size: 14px; font-weight: 700; color: #fff; }
+    .duration-item .days { font-size: 11px; color: var(--muted); margin-top: 3px; }
+    .duration-item input { width: 100%; padding: 8px 10px; border-radius: 8px; border: 1px solid #374151; background: #0f172a; color: #fff; font-size: 13px; }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      body { flex-direction: column; }
+      .sidebar { position: fixed; height: 100vh; transform: translateX(-100%); }
+      .sidebar.open { transform: translateX(0); }
+      .hamburger { display: block; }
+      .content { padding: 20px 15px; }
+      .topbar { padding: 0 15px; }
+      .product-item { flex-direction: column; align-items: flex-start; }
+      .duration-item { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast">
+    <span id="toast-icon">✅</span>
+    <span id="toast-msg">Success</span>
+  </div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="logo">Black Fire Store</div>
+    <ul class="nav-links">
+      <li class="active" data-target="dashboard" onclick="navigate('dashboard', this)"><a href="#">📊 Dashboard</a></li>
+      <li data-target="my-products" onclick="navigate('my-products', this)"><a href="#">📦 My Products</a></li>
+      <li data-target="add-product" onclick="navigate('add-product', this)"><a href="#">➕ Add Product</a></li>
+      <li data-target="add-balance" onclick="navigate('add-balance', this)"><a href="#">💰 Add Balance</a></li>
+      <li data-target="user-search" onclick="navigate('user-search', this)"><a href="#">🔍 User Search</a></li>
+      
+      <li onclick="navigate('update-name', this)" data-target="update-name"><a href="#">✏️ Update Name</a></li>
+      <li onclick="navigate('update-price', this)" data-target="update-price"><a href="#">💵 Update Price</a></li>
+      <li onclick="navigate('update-link', this)" data-target="update-link"><a href="#">🔗 Update Link</a></li>
+
+      <li data-target="my-balance" onclick="navigate('my-balance', this)"><a href="#">💰 My Balance</a></li>
+      <li data-target="my-keys" onclick="navigate('my-keys', this)"><a href="#">🔑 My Keys</a></li>
+      <li data-target="rules" onclick="navigate('rules', this)"><a href="#">📜 Rules</a></li>
+    </ul>
+    <div class="side-bottom">
+      <div class="user-info">
+        <div class="avatar" id="sidebar-avatar">S</div>
+        <div>
+          <b id="sidebar-username">Seller</b>
+          <small id="sidebar-server">Loading...</small>
+        </div>
+      </div>
+      <button class="btn btn-secondary" style="width: 100%;" onclick="logout()">Logout</button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="main-wrapper">
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="hamburger" onclick="toggleSidebar()">☰</button>
+        <h1 id="page-title">Dashboard <span>Overview</span></h1>
+      </div>
+      <div class="status-badge">Active Session</div>
+    </header>
+
+    <main class="content active" id="page-dashboard">
+      <div class="card">
+        <h2 id="welcome-text">Welcome Back, Seller!</h2>
+        <p class="subtitle" id="server-info">Managing: Loading...</p>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Total Products <span>📦</span></div>
+          <div class="stat-value" id="stat-products">0</div>
+          <div class="stat-sub">Active products in your store</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Keys Generated <span>🔑</span></div>
+          <div class="stat-value" id="stat-keys">0</div>
+          <div class="stat-sub">Total licenses sold</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">My Balance <span>💰</span></div>
+          <div class="stat-value" id="stat-balance">₹0.00</div>
+          <div class="stat-sub">Current wallet balance</div>
+        </div>
+      </div>
+    </main>
+
+    <main class="content" id="page-my-products">
+      <div class="card">
+        <h2>My Products</h2>
+        <p class="subtitle">Manage all products listed for your Discord server.</p>
+        <div class="product-list" id="product-list-container">
+          <!-- Products loaded here -->
+        </div>
+      </div>
+    </main>
+
+    <main class="content" id="page-add-product">
+      <div class="card">
+        <h2>Add New Product</h2>
+        <p class="subtitle">Create a new product to sell in your Discord server.</p>
+        <form id="add-product-form">
+          <div class="form-group">
+            <label>Product Name</label>
+            <input type="text" id="add-name" class="form-control" placeholder="e.g. Premium Key" required>
+          </div>
+          <div class="form-group">
+            <label>KeyAuth Subscription Name</label>
+            <input type="text" id="add-sub" class="form-control" placeholder="e.g. default" required>
+          </div>
+          <div class="form-group">
+            <label>Product Link (optional)</label>
+            <input type="url" id="add-link" class="form-control" placeholder="https://example.com/download">
+          </div>
+          <div class="form-group">
+            <label>KeyAuth Seller API Key (Required)</label>
+            <input type="password" id="add-key" class="form-control" placeholder="Paste your KeyAuth API key" required>
+          </div>
+          <button type="submit" class="btn btn-primary">Save Product</button>
+        </form>
+      </div>
+    </main>
+
+    <main class="content" id="page-add-balance">
+      <div class="card">
+        <h2>Add Balance to User</h2>
+        <p class="subtitle">Directly add balance to a Discord user's wallet.</p>
+        <form id="add-balance-form">
+          <div class="form-group">
+            <label>Discord User ID</label>
+            <input type="number" id="add-balance-uid" class="form-control" placeholder="e.g. 123456789012345678" required>
+          </div>
+          <div class="form-group">
+            <label>Amount (₹)</label>
+            <input type="number" id="add-balance-amount" class="form-control" placeholder="e.g. 100" min="1" step="0.01" required>
+          </div>
+          <button type="submit" class="btn btn-primary">Add Balance</button>
+        </form>
+      </div>
+    </main>
+
+    <main class="content" id="page-user-search">
+      <div class="card">
+        <h2>User Search</h2>
+        <p class="subtitle">Search for a Discord user by their ID.</p>
+        <form id="user-search-form" style="display:flex; gap:10px; align-items:flex-end;">
+          <div class="form-group" style="flex:1; margin-bottom:0;">
+            <label>Discord User ID</label>
+            <input type="number" id="search-uid" class="form-control" placeholder="Enter User ID" required>
+          </div>
+          <button type="submit" class="btn btn-primary" style="height:48px; margin-bottom:2px;">Search</button>
+        </form>
+        <div id="search-results" style="margin-top:20px;"></div>
+      </div>
+    </main>
+
+    <main class="content" id="page-update-name">
+      <div class="card">
+        <h2>Update Product Name</h2>
+        <p class="subtitle">Change the name of an existing product.</p>
+        <form id="update-name-form">
+          <div class="form-group">
+            <label>Select Product</label>
+            <select id="update-name-select" class="form-control" required></select>
+          </div>
+          <div class="form-group">
+            <label>New Product Name</label>
+            <input type="text" id="update-name-input" class="form-control" placeholder="Enter new name" required>
+          </div>
+          <button type="submit" class="btn btn-primary">Update Name</button>
+        </form>
+      </div>
+    </main>
+
+    <main class="content" id="page-update-price">
+      <div class="card" style="max-width:900px">
+        <h2>Update Product Price & Options</h2>
+        <p class="subtitle">Select a product to manage its duration options and prices.</p>
+        
+        <div class="form-group">
+          <label>Select Product</label>
+          <select id="update-price-select" class="form-control" required></select>
+        </div>
+
+        <!-- Duration Options List -->
+        <div id="durationOptionsList" style="margin-top:20px;">
+          <p class="subtitle">Select a product to view options.</p>
+        </div>
+
+        <!-- Add New Duration Option -->
+        <div style="border-top:1px solid #263244; padding-top:18px; margin-top:18px;">
+          <h3 style="margin-bottom:12px;">➕ Add New Duration Option</h3>
+          <form id="addDurationOptionForm">
+            <div class="form-group"><label>Duration Type</label><select id="durationOptionType" class="form-control"><option value="day">Day(s)</option><option value="week">Week(s)</option><option value="month">Month(s)</option><option value="lifetime">Lifetime</option></select></div>
+            <div class="form-group"><label>Number (e.g. 2 days / 3 weeks / 6 months)</label><input id="durationOptionCount" type="number" min="1" max="1200" value="1" class="form-control" required></div>
+            <div class="form-group"><label>Price (₹)</label><input id="durationOptionPrice" type="number" min="1" step="1" class="form-control" placeholder="Enter final price" required></div>
+            <button type="submit" class="btn btn-primary">➕ Add New Option</button>
+          </form>
+        </div>
+      </div>
+    </main>
+
+    <main class="content" id="page-update-link">
+      <div class="card">
+        <h2>Update Product Link</h2>
+        <p class="subtitle">Change the download/access link of an existing product.</p>
+        <form id="update-link-form">
+          <div class="form-group">
+            <label>Select Product</label>
+            <select id="update-link-select" class="form-control" required></select>
+          </div>
+          <div class="form-group">
+            <label>New Product Link</label>
+            <input type="url" id="update-link-input" class="form-control" placeholder="https://newlink.com" required>
+          </div>
+          <button type="submit" class="btn btn-primary">Update Link</button>
+        </form>
+      </div>
+    </main>
+
+    <main class="content" id="page-my-balance">
+      <div class="card">
+        <h2>My Balance</h2>
+        <p class="subtitle">Your current earnings and wallet balance.</p>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">Available Balance <span>₹</span></div>
+            <div class="stat-value" id="main-balance-val">₹0.00</div>
+          </div>
+        </div>
+        
+        <div class="card" style="margin-top:20px; background:rgba(0,0,0,0.2);">
+          <h3>🏦 Payout Account</h3>
+          <p class="subtitle">UPI ya Bank account save/update karein.</p>
+          <form id="payout-form">
+            <label>Payment Method</label>
+            <select id="payout-method" class="form-control">
+              <option value="upi">UPI</option>
+              <option value="bank">Bank</option>
+            </select>
+            
+            <div id="upi-fields" style="margin-top:15px;">
+              <label>UPI ID</label>
+              <input id="payout-upi" class="form-control" placeholder="name@upi">
+            </div>
+            
+            <div id="bank-fields" style="display:none; margin-top:15px;">
+              <label>Account Holder Name</label>
+              <input id="payout-name" class="form-control" placeholder="Full Name">
+              <label style="margin-top:10px;">Bank Name</label>
+              <input id="payout-bank" class="form-control" placeholder="Bank Name">
+              <label style="margin-top:10px;">Account Number</label>
+              <input id="payout-account" class="form-control" placeholder="Account Number">
+              <label style="margin-top:10px;">IFSC Code</label>
+              <input id="payout-ifsc" class="form-control" placeholder="IFSC0001234">
+            </div>
+            
+            <button class="btn btn-primary" type="submit" style="margin-top:20px;">Save / Update Account</button>
+          </form>
+        </div>
+        
+        <div class="card" style="margin-top:20px; background:rgba(0,0,0,0.2);">
+          <h3>💸 Request Withdrawal</h3>
+          <form id="withdraw-form">
+            <label>Saved Account</label>
+            <select id="withdraw-account" class="form-control" required></select>
+            <label style="margin-top:10px;">Amount (₹)</label>
+            <input id="withdraw-amount" class="form-control" type="number" min="1" step="0.01" required>
+            <button class="btn btn-primary" type="submit" style="margin-top:20px;">Submit Withdrawal Request</button>
+          </form>
+          <p id="withdraw-msg" class="subtitle"></p>
+          
+          <h3 style="margin-top:20px;">My Withdrawal Requests</h3>
+          <div id="withdraw-list"></div>
+        </div>
+      </div>
+    </main>
+
+    <main class="content" id="page-my-keys">
+      <div class="card">
+        <h2>My Keys</h2>
+        <p class="subtitle">Manage customer keys and generate a project account manually.</p>
+        <div class="card" style="margin:16px 0;background:rgba(0,0,0,.18)">
+          <h3>Generate Project Key</h3>
+          <p class="subtitle">Select your project/product, enter username, password and validity days.</p>
+          <form id="manual-key-form">
+            <div class="form-group"><label>Project / Product</label><select id="manual-key-product" class="form-control" required></select></div>
+            <div class="form-group"><label>Username</label><input id="manual-key-username" class="form-control" maxlength="64" required></div>
+            <div class="form-group"><label>Password</label><input id="manual-key-password" class="form-control" required></div>
+            <div class="form-group"><label>Days</label><input id="manual-key-days" type="number" class="form-control" min="1" max="36500" value="30" required></div>
+            <button class="btn btn-primary" type="submit">Generate Key</button>
+          </form>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Username</th>
+                <th>Product</th>
+                <th>Duration</th>
+                <th>Expiry</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="keys-table-body">
+              <tr><td colspan="6" style="text-align: center;">Loading keys...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+    
+    <main class="content" id="page-rules">
+      <div class="card">
+        <h2>Store Rules</h2>
+        <p class="subtitle">Read the rules set by Main Admin.</p>
+        <div id="rules-list"></div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    let sellerData = null;
+    let productsCache = [];
+    let keysCache = [];
+    let currentProductOptions = [];
+
+    const $ = id => document.getElementById(id);
+
+    // ============ PREMIUM TOAST NOTIFICATION ============
+    function showToast(msg, type = 'success') {
+      const toast = $('toast');
+      const icon = $('toast-icon');
+      const msgEl = $('toast-msg');
+      
+      msgEl.textContent = msg;
+      toast.className = `toast show ${type}`;
+      icon.textContent = type === 'success' ? '✅' : '❌';
+      
+      setTimeout(() => { toast.classList.remove('show'); }, 4000);
+    }
+
+    function toggleSidebar() {
+      $('sidebar').classList.toggle('open');
+    }
+
+    function navigate(pageId, element) {
+      document.querySelectorAll('.content').forEach(page => page.classList.remove('active'));
+      $(`page-${pageId}`).classList.add('active');
+      
+      document.querySelectorAll('.nav-links li').forEach(li => li.classList.remove('active'));
+      if(element) element.classList.add('active');
+
+      const titles = {
+        'dashboard': 'Dashboard <span>Overview</span>',
+        'my-products': 'My <span>Products</span>',
+        'add-product': 'Add <span>Product</span>',
+        'add-balance': 'Add <span>Balance</span>',
+        'user-search': 'User <span>Search</span>',
+        'update-name': 'Update <span>Name</span>',
+        'update-price': 'Update <span>Price</span>',
+        'update-link': 'Update <span>Link</span>',
+        'my-balance': 'My <span>Balance</span>',
+        'my-keys': 'My <span>Keys</span>',
+        'rules': 'Store <span>Rules</span>'
+      };
+      $('page-title').innerHTML = titles[pageId];
+
+      if (window.innerWidth <= 900) {
+        $('sidebar').classList.remove('open');
+      }
+    }
+
+    async function api(url, options = {}) {
+      const res = await fetch(url, {
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json' },
+        ...options
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        if (res.status === 401) {
+          location.replace('/login.html');
+          throw new Error('Redirecting to login...');
+        }
+        throw new Error(data.error || 'Request failed');
+      }
+      return data;
+    }
+
+    async function logout() {
+      try { await api('/api/dc/seller/logout', { method: 'POST' }); } 
+      finally { location.replace('/login.html'); }
+    }
+
+    // Load Data
+    async function loadData() {
+      try {
+        const me = await api('/api/dc/seller/me');
+        sellerData = me.seller;
+        
+        $('sidebar-username').textContent = sellerData.username;
+        $('sidebar-avatar').textContent = sellerData.username.charAt(0).toUpperCase();
+        $('sidebar-server').textContent = sellerData.guild_name;
+        $('welcome-text').textContent = `Welcome Back, ${sellerData.username}!`;
+        $('server-info').textContent = `Managing Discord Server: ${sellerData.guild_name} (ID: ${sellerData.guild_id})`;
+
+        const [prodsRes, keysRes, balanceRes] = await Promise.all([
+          api('/api/dc/seller/products'),
+          api('/api/dc/seller/keys'),
+          api('/api/dc/seller/balance')
+        ]);
+
+        productsCache = prodsRes;
+        keysCache = keysRes;
+
+        $('stat-products').textContent = productsCache.length;
+        $('stat-keys').textContent = keysCache.length;
+        
+        const balanceVal = (balanceRes.balance_paise || 0) / 100;
+        $('stat-balance').textContent = `₹${balanceVal.toFixed(2)}`;
+        $('main-balance-val').textContent = `₹${balanceVal.toFixed(2)}`;
+
+        renderProducts();
+        renderKeys();
+        populateDropdowns();
+        loadPayouts();
+        loadRules();
+
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    // ============ ADD BALANCE & USER SEARCH ============
+    $('add-balance-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const uid = $('add-balance-uid').value;
+      const amount = $('add-balance-amount').value;
+      
+      try {
+        await api('/api/dc/seller/add-balance', {
+          method: 'POST',
+          body: JSON.stringify({ user_id: uid, amount: amount })
+        });
+        showToast('Balance added successfully!');
+        $('add-balance-form').reset();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    });
+
+    $('user-search-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const uid = $('search-uid').value;
+      try {
+        const res = await api(`/api/dc/seller/search-user?user_id=${uid}`);
+        const u = res.user;
+        const orders = res.orders;
+        
+        let ordersHtml = orders.map(o => `
+          <div style="padding:10px; border-bottom:1px solid #333;">
+            <b>${o.product_name}</b> — ₹${(o.amount_paise/100).toFixed(2)} 
+            <span class="badge ${o.payment_status === 'paid' ? 'active' : 'inactive'}">${o.payment_status}</span>
+            <br><small style="color:#888;">Order: ${o.order_id}</small>
+          </div>
+        `).join('');
+        
+        if (!ordersHtml) ordersHtml = '<p style="color:#888;">No orders found.</p>';
+        
+        $('search-results').innerHTML = `
+          <div class="card" style="background:rgba(0,0,0,0.2);">
+            <h3>User Details</h3>
+            <p><b>Name:</b> ${u.display_name || 'N/A'}</p>
+            <p><b>ID:</b> ${u.user_id}</p>
+            <p><b>Balance:</b> ₹${(u.balance_paise/100).toFixed(2)}</p>
+            <p><b>Joined:</b> ${u.joined_at ? u.joined_at.split('T')[0] : 'N/A'}</p>
+            
+            <h3 style="margin-top:20px;">Recent Orders</h3>
+            ${ordersHtml}
+          </div>
+        `;
+      } catch (err) {
+        $('search-results').innerHTML = `<p style="color:red;">${err.message}</p>`;
+      }
+    });
+
+    // ============ RULES ============
+    async function loadRules() {
+      try {
+        const rules = await api('/api/dc/seller/rules');
+        if (rules.length === 0) {
+          $('rules-list').innerHTML = '<p style="color:#888;">No rules set by Admin yet.</p>';
+          return;
+        }
+        
+        $('rules-list').innerHTML = rules.map(r => `
+          <div class="card" style="background:rgba(0,0,0,0.2); margin-bottom:10px;">
+            <p style="margin-top:5px; color:#ccc; white-space:pre-wrap;">${String(r.content || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}</p>
+          </div>
+        `).join('');
+      } catch (e) {}
+    }
+
+    // ============ PAYOUT & WITHDRAWAL ============
+    $('payout-method').addEventListener('change', (e) => {
+      $('upi-fields').style.display = e.target.value === 'upi' ? '' : 'none';
+      $('bank-fields').style.display = e.target.value === 'bank' ? '' : 'none';
+    });
+
+    $('payout-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const method = $('payout-method').value;
+      const body = method === 'upi' 
+        ? { method, upi_id: $('payout-upi').value }
+        : { method, account_name: $('payout-name').value, bank_name: $('payout-bank').value, account_number: $('payout-account').value, ifsc: $('payout-ifsc').value };
+      
+      try {
+        await api('/api/dc/seller/payout-accounts', { method:'POST', body:JSON.stringify(body) });
+        showToast('Payout account saved');
+        loadPayouts();
+      } catch(err) {
+        showToast(err.message, 'error');
+      }
+    });
+
+    $('withdraw-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      try {
+        const result = await api('/api/dc/seller/withdrawals', {
+          method: 'POST',
+          body: JSON.stringify({ account_id: $('withdraw-account').value, amount: $('withdraw-amount').value })
+        });
+        $('withdraw-msg').textContent = `Request #${result.withdrawal_id} submitted. Status: Pending`;
+        $('withdraw-amount').value = '';
+        await loadPayouts();
+      } catch(err) {
+        $('withdraw-msg').textContent = err.message;
+      }
+    });
+
+    window.loadPayouts = async function() {
+      try {
+        const [accounts, requests] = await Promise.all([
+          api('/api/dc/seller/payout-accounts'),
+          api('/api/dc/seller/withdrawals')
+        ]);
+        
+        const sel = $('withdraw-account');
+        sel.innerHTML = '';
+        accounts.forEach(a => {
+          const o = document.createElement('option');
+          o.value = a.id;
+          o.textContent = a.method === 'upi' ? `UPI: ${a.upi_id}` : `Bank: ${a.bank_name} •••${String(a.account_number).slice(-4)}`;
+          sel.appendChild(o);
+        });
+        
+        $('withdraw-list').innerHTML = requests.length ? requests.map(w => `
+          <div class="stat-card" style="margin:8px 0; padding:15px;">
+            <p><b>Request #${w.id}</b> — ₹${(w.amount_paise/100).toFixed(2)} — <span class="badge ${w.status === 'pending' ? 'active' : 'inactive'}">${w.status}</span></p>
+          </div>
+        `).join('') : '<p style="color:#888;">No withdrawal requests yet.</p>';
+      } catch(e) {}
+    };
+
+    // ============ MY PRODUCTS (WITH PUBLISH BUTTON) ============
+    function renderProducts() {
+      const container = $('product-list-container');
+      if (productsCache.length === 0) {
+        container.innerHTML = '<p style="color:var(--muted); text-align:center;">No products found. Add your first product!</p>';
+        return;
+      }
+
+      container.innerHTML = productsCache.map(p => {
+        const isPublished = p.is_published === 1;
+        const statusBadge = isPublished 
+          ? '<span class="badge active">Published</span>' 
+          : '<span class="badge inactive">Draft</span>';
+        
+        return `
+        <div class="product-item">
+          <div>
+            <h3>${p.name} ${statusBadge}</h3>
+            <p>Subscription: ${p.subscription}</p>
+            <p>Price: ₹${(p.price_paise / 100).toFixed(2)}</p>
+            ${p.product_link ? `<p>Link: <a href="${p.product_link}" target="_blank">${p.product_link}</a></p>` : ''}
+          </div>
+          <div style="display: flex; gap: 10px; flex-wrap:wrap;">
+            ${isPublished 
+              ? `<button class="btn btn-secondary" onclick="unpublishProduct('${p.product_id}')">⏸ Unpublish</button>`
+              : `<button class="btn btn-success" onclick="publishProduct('${p.product_id}')">▶ Publish to Discord</button>`
+            }
+            <button class="btn btn-danger" onclick="deleteProduct('${p.product_id}')">Delete</button>
+          </div>
+        </div>
+      `}).join('');
+    }
+
+    window.publishProduct = async function(pid) {
+      try {
+        await api(`/api/dc/seller/products/${pid}/publish`, { method: 'POST' });
+        showToast('Product published to Discord!');
+        loadData();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    };
+
+    window.unpublishProduct = async function(pid) {
+      try {
+        await api(`/api/dc/seller/products/${pid}/unpublish`, { method: 'POST' });
+        showToast('Product unpublished from Discord!');
+        loadData();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    };
+
+    function renderKeys() {
+      const tbody = $('keys-table-body');
+      if (keysCache.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No keys generated yet.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = keysCache.map(k => `
+        <tr>
+          <td><b>${k.username}</b></td>
+          <td>${k.product_name}</td>
+          <td>${k.duration_label}</td>
+          <td>${new Date(k.expires_at).toLocaleString()}</td>
+          <td><span class="badge ${k.status === 'active' ? 'active' : 'inactive'}">${k.status}</span></td>
+          <td>
+            <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;" onclick="resetKey('${k.key_id}')">Reset</button>
+            <button class="btn btn-danger" style="padding: 6px 12px; font-size: 12px;" onclick="deleteKey('${k.key_id}')">Delete</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function populateDropdowns() {
+      const options = productsCache.map(p => `<option value="${p.product_id}">${p.name}</option>`).join('');
+      
+      $('update-name-select').innerHTML = '<option value="">Select a product...</option>' + options;
+      $('update-price-select').innerHTML = '<option value="">Select a product...</option>' + options;
+      $('update-link-select').innerHTML = '<option value="">Select a product...</option>' + options;
+      const keyProduct = $('manual-key-product');
+      if (keyProduct) keyProduct.innerHTML = '<option value="">Select a project/product...</option>' + options;
+    }
+
+    // ============ ADD PRODUCT (NO PRICE INPUT) ============
+    $('add-product-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const payload = {
+        name: $('add-name').value.trim(),
+        subscription: $('add-sub').value.trim(),
+        product_link: $('add-link').value.trim(),
+        seller_key: $('add-key').value.trim()
+      };
+      
+      try {
+        await api('/api/dc/seller/products', { method: 'POST', body: JSON.stringify(payload) });
+        showToast('Product added successfully!');
+        $('add-product-form').reset();
+        loadData();
+        navigate('my-products', document.querySelector('[data-target="my-products"]'));
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    });
+
+    // ============ UPDATE NAME ============
+    $('update-name-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const pid = $('update-name-select').value;
+      const newName = $('update-name-input').value.trim();
+      if (!pid) return;
+
+      try {
+        await api(`/api/dc/seller/products/${pid}`, { method: 'PATCH', body: JSON.stringify({ name: newName }) });
+        showToast('Product name updated!');
+        $('update-name-form').reset();
+        loadData();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    });
+
+    // ============ UPDATE PRICE (DURATION OPTIONS) ============
+    document.getElementById('updatePriceSelect')?.addEventListener('change', async function() {
+      const pid = this.value;
+      const box = $('durationOptionsList');
+      if (!pid) {
+        box.innerHTML = '<p class="subtitle">Select a product to view options.</p>';
+        return;
+      }
+      
+      box.innerHTML = '<p class="subtitle">Loading options...</p>';
+      
+      try {
+        const opts = await api(`/api/dc/seller/products/${pid}/duration`);
+        currentProductOptions = opts || [];
+        
+        if (!opts || opts.length === 0) {
+          box.innerHTML = '<p class="subtitle">Is product ke liye koi option nahi hai. Naya option add karein.</p>';
+          return;
+        }
+        
+        box.innerHTML = opts.map(o => `
+          <div class="duration-item">
+            <div>
+              <div class="label">${o.label}</div>
+              <div class="days">${o.duration_days >= 36500 ? 'Lifetime' : o.duration_days + ' day(s)'}</div>
+            </div>
+            <div>
+              <label style="font-size:11px">Price (₹)</label>
+              <input type="number" min="1" step="1" id="price-${o.option_id}" value="${Math.round(Number(o.price_paise||0)/100)}">
+            </div>
+            <button class="btn btn-success" onclick="saveDurationPrice('${o.option_id}')">Save</button>
+            <button class="btn btn-danger" onclick="deleteDurationOption('${o.option_id}')">Delete</button>
+          </div>
+        `).join('');
+        
+      } catch (err) {
+        box.innerHTML = `<p style="color:red;">${err.message}</p>`;
+      }
+    });
+
+    window.saveDurationPrice = async function(optionId) {
+      const el = document.getElementById('price-' + optionId);
+      if (!el || Number(el.value) < 1) return alert('Price ₹1 ya usse zyada hona chahiye.');
+      
+      const pid = document.getElementById('updatePriceSelect').value;
+      if (!pid) return;
+      
+      try {
+        await api(`/api/dc/seller/products/${pid}/duration/${optionId}`, {
+          method: 'PATCH',
+          body: JSON.stringify({ price: el.value })
+        });
+        showToast('Duration price updated!');
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    };
+
+    window.deleteDurationOption = async function(optionId) {
+      if (!confirm('Is duration option ko delete karna hai?')) return;
+      
+      const pid = document.getElementById('updatePriceSelect').value;
+      if (!pid) return;
+      
+      try {
+        await api(`/api/dc/seller/products/${pid}/duration/${optionId}`, { method: 'DELETE' });
+        showToast('Duration option deleted!');
+        document.getElementById('updatePriceSelect').dispatchEvent(new Event('change'));
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    };
+
+    // Add Duration Option Form
+    document.getElementById('addDurationOptionForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const pid = document.getElementById('updatePriceSelect').value;
+      if (!pid) return alert('Pehle product select karein.');
+      
+      const type = document.getElementById('durationOptionType').value;
+      const count = Number(document.getElementById('durationOptionCount').value || 1);
+      let days = count;
+      if (type === 'week') days = count * 7;
+      else if (type === 'month') days = count * 30;
+      else if (type === 'lifetime') days = 36500;
+      
+      const label = (type === 'lifetime' ? 'Lifetime' : `${count} ${type}${count===1?'':'s'}`);
+      
+      try {
+        await api(`/api/dc/seller/products/${pid}/duration`, {
+          method: 'POST',
+          body: JSON.stringify({
+            label: label,
+            duration_days: days,
+            price: document.getElementById('durationOptionPrice').value
+          })
+        });
+        showToast('Duration option added!');
+        e.target.reset();
+        document.getElementById('durationOptionCount').value = 1;
+        document.getElementById('updatePriceSelect').dispatchEvent(new Event('change'));
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    });
+
+    // ============ MANUAL PROJECT KEY GENERATION ============
+    document.getElementById('manual-key-form')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const payload = {
+        product_id: $('manual-key-product').value,
+        username: $('manual-key-username').value.trim(),
+        password: $('manual-key-password').value,
+        days: Number($('manual-key-days').value)
+      };
+      if (!payload.product_id) return showToast('Project/product select karein.', 'error');
+      try {
+        await api('/api/dc/seller/keys', { method: 'POST', body: JSON.stringify(payload) });
+        showToast('Project key successfully generated!');
+        e.target.reset(); $('manual-key-days').value = 30;
+        loadData();
+      } catch (err) { showToast(err.message, 'error'); }
+    });
+
+    // ============ UPDATE LINK ============
+    $('update-link-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const pid = $('update-link-select').value;
+      const newLink = $('update-link-input').value.trim();
+      if (!pid) return;
+
+      try {
+        await api(`/api/dc/seller/products/${pid}`, { method: 'PATCH', body: JSON.stringify({ product_link: newLink }) });
+        showToast('Product link updated!');
+        $('update-link-form').reset();
+        loadData();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    });
+
+    // ============ DELETE PRODUCT ============
+    async function deleteProduct(pid) {
+      if (!confirm('Are you sure you want to delete this product?')) return;
+      try {
+        await api(`/api/dc/seller/products/${pid}`, { method: 'DELETE' });
+        showToast('Product deleted.');
+        loadData();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    // ============ KEYS ============
+    async function resetKey(kid) {
+      if (!confirm('Reset this key? A new password will be generated.')) return;
+      try {
+        await api(`/api/dc/seller/keys/${kid}/reset`, { method: 'POST' });
+        showToast('Key reset successfully.');
+        loadData();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    async function deleteKey(kid) {
+      if (!confirm('Delete this key permanently?')) return;
+      try {
+        await api(`/api/dc/seller/keys/${kid}`, { method: 'DELETE' });
+        showToast('Key deleted.');
+        loadData();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    // Init: Load data
+    loadData();
+  </script>
+</body>
+</html>
